@@ -7,24 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import {
-  HandHelping,
-  WandSparkles,
-  LifeBuoyIcon,
-  BookOpenText,
-  ChevronDown,
-  Send,
-} from "lucide-react";
+import { HandHelping, WandSparkles, LifeBuoyIcon, BookOpenText, ChevronDown, Send } from "lucide-react";
 import "highlight.js/styles/atom-one-dark.css";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const TypedText = ({ text = "", delay = 5 }) => {
   const [displayedText, setDisplayedText] = useState("");
@@ -55,11 +43,7 @@ interface ConversationHeaderProps {
   showAvatar: boolean;
 }
 
-const UISelector = ({
-  redirectToAgent,
-}: {
-  redirectToAgent: { should_redirect: boolean; reason: string };
-}) => {
+const UISelector = ({ redirectToAgent }: { redirectToAgent: { should_redirect: boolean; reason: string } }) => {
   if (redirectToAgent.should_redirect) {
     return (
       <Button
@@ -86,28 +70,13 @@ const UISelector = ({
   return null;
 };
 
-const SuggestedQuestions = ({
-  questions,
-  onQuestionClick,
-  isLoading,
-}: {
-  questions: string[];
-  onQuestionClick: (question: string) => void;
-  isLoading: boolean;
-}) => {
+const SuggestedQuestions = ({ questions, onQuestionClick, isLoading }: { questions: string[]; onQuestionClick: (question: string) => void; isLoading: boolean }) => {
   if (!questions || questions.length === 0) return null;
 
   return (
     <div className="mt-2 pl-10">
       {questions.map((question, index) => (
-        <Button
-          key={index}
-          className="text-sm mb-2 mr-2 ml-0 text-gray-500 shadow-sm"
-          variant="outline"
-          size="sm"
-          onClick={() => onQuestionClick(question)}
-          disabled={isLoading}
-        >
+        <Button key={index} className="text-sm mb-2 mr-2 ml-0 text-gray-500 shadow-sm" variant="outline" size="sm" onClick={() => onQuestionClick(question)} disabled={isLoading}>
           {question}
         </Button>
       ))}
@@ -115,13 +84,7 @@ const SuggestedQuestions = ({
   );
 };
 
-const MessageContent = ({
-  content,
-  role,
-}: {
-  content: string;
-  role: string;
-}) => {
+const MessageContent = ({ content, role }: { content: string; role: string }) => {
   const [thinking, setThinking] = useState(true);
   const [parsed, setParsed] = useState<{
     response?: string;
@@ -147,11 +110,7 @@ const MessageContent = ({
       const result = JSON.parse(content);
       console.log("🔍 Parsed Result:", result);
 
-      if (
-        result.response &&
-        result.response.length > 0 &&
-        result.response !== "..."
-      ) {
+      if (result.response && result.response.length > 0 && result.response !== "...") {
         setParsed(result);
         setThinking(false);
         clearTimeout(timer);
@@ -180,12 +139,8 @@ const MessageContent = ({
 
   return (
     <>
-      <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeHighlight]}>
-        {parsed.response || content}
-      </ReactMarkdown>
-      {parsed.redirect_to_agent && (
-        <UISelector redirectToAgent={parsed.redirect_to_agent} />
-      )}
+      <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeHighlight]}>{parsed.response || content}</ReactMarkdown>
+      {parsed.redirect_to_agent && <UISelector redirectToAgent={parsed.redirect_to_agent} />}
     </>
   );
 };
@@ -218,26 +173,13 @@ type KnowledgeBase = {
   name: string;
 };
 
-const ConversationHeader: React.FC<ConversationHeaderProps> = ({
-  selectedModel,
-  setSelectedModel,
-  models,
-  showAvatar,
-  selectedKnowledgeBase,
-  setSelectedKnowledgeBase,
-  knowledgeBases,
-}) => (
+const ConversationHeader: React.FC<ConversationHeaderProps> = ({ selectedModel, setSelectedModel, models, showAvatar, selectedKnowledgeBase, setSelectedKnowledgeBase, knowledgeBases }) => (
   <div className="p-0 flex flex-col sm:flex-row items-start sm:items-center justify-between pb-2 animate-fade-in">
     <div className="flex items-center space-x-4 mb-2 sm:mb-0">
       {showAvatar && (
         <>
           <Avatar className="w-10 h-10 border">
-            <AvatarImage
-              src="/ant-logo.svg"
-              alt="AI Assistant Avatar"
-              width={40}
-              height={40}
-            />
+            <AvatarImage src="/ant-logo.svg" alt="AI Assistant Avatar" width={40} height={40} />
             <AvatarFallback>AI</AvatarFallback>
           </Avatar>
           <div>
@@ -250,21 +192,14 @@ const ConversationHeader: React.FC<ConversationHeaderProps> = ({
     <div className="flex space-x-2 w-full sm:w-auto">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-grow text-muted-foreground sm:flex-grow-0"
-          >
+          <Button variant="outline" size="sm" className="flex-grow text-muted-foreground sm:flex-grow-0">
             {models.find((m) => m.id === selectedModel)?.name}
             <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {models.map((model) => (
-            <DropdownMenuItem
-              key={model.id}
-              onSelect={() => setSelectedModel(model.id)}
-            >
+            <DropdownMenuItem key={model.id} onSelect={() => setSelectedModel(model.id)}>
               {model.name}
             </DropdownMenuItem>
           ))}
@@ -272,22 +207,14 @@ const ConversationHeader: React.FC<ConversationHeaderProps> = ({
       </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-grow text-muted-foreground  sm:flex-grow-0"
-          >
-            {knowledgeBases.find((kb) => kb.id === selectedKnowledgeBase)
-              ?.name || "Select KB"}
+          <Button variant="outline" size="sm" className="flex-grow text-muted-foreground  sm:flex-grow-0">
+            {knowledgeBases.find((kb) => kb.id === selectedKnowledgeBase)?.name || "Select KB"}
             <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {knowledgeBases.map((kb) => (
-            <DropdownMenuItem
-              key={kb.id}
-              onSelect={() => setSelectedKnowledgeBase(kb.id)}
-            >
+            <DropdownMenuItem key={kb.id} onSelect={() => setSelectedKnowledgeBase(kb.id)}>
               {kb.name}
             </DropdownMenuItem>
           ))}
@@ -306,12 +233,10 @@ function ChatArea() {
   const [showAvatar, setShowAvatar] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState(
-    "your-knowledge-base-id",
-  );
+  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("your-knowledge-base-id");
 
   const knowledgeBases: KnowledgeBase[] = [
-    { id: "your-knowledge-base-id", name: "Your KB Name" },
+    { id: "EVBQ6W3UIC", name: "knowledge-base-quick-start-xwfud" },
     // Add more knowledge bases as needed
   ];
 
@@ -350,15 +275,8 @@ function ChatArea() {
         // You might want to handle this data differently when LeftSidebar is not present
       };
 
-      window.addEventListener(
-        "updateSidebar" as any,
-        handleUpdateSidebar as EventListener,
-      );
-      return () =>
-        window.removeEventListener(
-          "updateSidebar" as any,
-          handleUpdateSidebar as EventListener,
-        );
+      window.addEventListener("updateSidebar" as any, handleUpdateSidebar as EventListener);
+      return () => window.removeEventListener("updateSidebar" as any, handleUpdateSidebar as EventListener);
     }
   }, []);
 
@@ -370,15 +288,8 @@ function ChatArea() {
         // You might want to handle this data differently when RightSidebar is not present
       };
 
-      window.addEventListener(
-        "updateRagSources" as any,
-        handleUpdateRagSources as EventListener,
-      );
-      return () =>
-        window.removeEventListener(
-          "updateRagSources" as any,
-          handleUpdateRagSources as EventListener,
-        );
+      window.addEventListener("updateRagSources" as any, handleUpdateRagSources as EventListener);
+      return () => window.removeEventListener("updateRagSources" as any, handleUpdateRagSources as EventListener);
     }
   }, []);
 
@@ -398,9 +309,7 @@ function ChatArea() {
     console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
   };
 
-  const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement> | string,
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | string) => {
     if (typeof event !== "string") {
       event.preventDefault();
     }
@@ -430,11 +339,7 @@ function ChatArea() {
       }),
     };
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      userMessage,
-      placeholderMessage,
-    ]);
+    setMessages((prevMessages) => [...prevMessages, userMessage, placeholderMessage]);
     setInput("");
 
     const placeholderDisplayed = performance.now();
@@ -469,9 +374,7 @@ function ChatArea() {
       logDuration("Total API Duration", endTime - startTime);
       console.log("⬅️ Received response from API:", data);
 
-      const suggestedQuestionsHeader = response.headers.get(
-        "x-suggested-questions",
-      );
+      const suggestedQuestionsHeader = response.headers.get("x-suggested-questions");
       if (suggestedQuestionsHeader) {
         data.suggested_questions = JSON.parse(suggestedQuestionsHeader);
       }
@@ -479,10 +382,7 @@ function ChatArea() {
       const ragHeader = response.headers.get("x-rag-sources");
       if (ragHeader) {
         const ragProcessed = performance.now();
-        logDuration(
-          "🔍 RAG Processing Duration",
-          ragProcessed - responseReceived,
-        );
+        logDuration("🔍 RAG Processing Duration", ragProcessed - responseReceived);
         const sources = JSON.parse(ragHeader);
         window.dispatchEvent(
           new CustomEvent("updateRagSources", {
@@ -491,7 +391,7 @@ function ChatArea() {
               query: userMessage.content,
               debug: data.debug,
             },
-          }),
+          })
         );
       }
 
@@ -524,7 +424,7 @@ function ChatArea() {
         window.dispatchEvent(
           new CustomEvent("agentRedirectRequested", {
             detail: data.redirect_to_agent,
-          }),
+          })
         );
       }
     } catch (error) {
@@ -567,57 +467,32 @@ function ChatArea() {
     };
 
     window.addEventListener("toolExecution", handleToolExecution);
-    return () =>
-      window.removeEventListener("toolExecution", handleToolExecution);
+    return () => window.removeEventListener("toolExecution", handleToolExecution);
   }, []);
 
   return (
     <Card className="flex-1 flex flex-col mb-4 mr-4 ml-4">
       <CardContent className="flex-1 flex flex-col overflow-hidden pt-4 px-4 pb-0">
-        <ConversationHeader
-          selectedModel={selectedModel}
-          setSelectedModel={setSelectedModel}
-          models={models}
-          showAvatar={showAvatar}
-          selectedKnowledgeBase={selectedKnowledgeBase}
-          setSelectedKnowledgeBase={setSelectedKnowledgeBase}
-          knowledgeBases={knowledgeBases}
-        />
+        <ConversationHeader selectedModel={selectedModel} setSelectedModel={setSelectedModel} models={models} showAvatar={showAvatar} selectedKnowledgeBase={selectedKnowledgeBase} setSelectedKnowledgeBase={setSelectedKnowledgeBase} knowledgeBases={knowledgeBases} />
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full animate-fade-in-up">
               <Avatar className="w-10 h-10 mb-4 border">
-                <AvatarImage
-                  src="/ant-logo.svg"
-                  alt="AI Assistant Avatar"
-                  width={40}
-                  height={40}
-                />
+                <AvatarImage src="/ant-logo.svg" alt="AI Assistant Avatar" width={40} height={40} />
               </Avatar>
-              <h2 className="text-2xl font-semibold mb-8">
-                Here&apos;s how I can help
-              </h2>
+              <h2 className="text-2xl font-semibold mb-8">Here&apos;s how I can help</h2>
               <div className="space-y-4 text-sm">
                 <div className="flex items-center gap-3">
                   <HandHelping className="text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    Need guidance? I&apos;ll help navigate tasks using internal
-                    resources.
-                  </p>
+                  <p className="text-muted-foreground">Need guidance? I&apos;ll help navigate tasks using internal resources.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <WandSparkles className="text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    I&apos;m a whiz at finding information! I can dig through
-                    your knowledge base.
-                  </p>
+                  <p className="text-muted-foreground">I&apos;m a whiz at finding information! I can dig through your knowledge base.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <BookOpenText className="text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    I&apos;m always learning! The more you share, the better I
-                    can assist you.
-                  </p>
+                  <p className="text-muted-foreground">I&apos;m always learning! The more you share, the better I can assist you.</p>
                 </div>
               </div>
             </div>
@@ -626,11 +501,7 @@ function ChatArea() {
               {messages.map((message, index) => (
                 <div key={message.id}>
                   <div
-                    className={`flex items-start ${
-                      message.role === "user" ? "justify-end" : ""
-                    } ${
-                      index === messages.length - 1 ? "animate-fade-in-up" : ""
-                    }`}
+                    className={`flex items-start ${message.role === "user" ? "justify-end" : ""} ${index === messages.length - 1 ? "animate-fade-in-up" : ""}`}
                     style={{
                       animationDuration: "300ms",
                       animationFillMode: "backwards",
@@ -638,35 +509,15 @@ function ChatArea() {
                   >
                     {message.role === "assistant" && (
                       <Avatar className="w-8 h-8 mr-2 border">
-                        <AvatarImage
-                          src="/ant-logo.svg"
-                          alt="AI Assistant Avatar"
-                        />
+                        <AvatarImage src="/ant-logo.svg" alt="AI Assistant Avatar" />
                         <AvatarFallback>AI</AvatarFallback>
                       </Avatar>
                     )}
-                    <div
-                      className={`p-3 rounded-md text-sm max-w-[65%] ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted border"
-                      }`}
-                    >
-                      <MessageContent
-                        content={message.content}
-                        role={message.role}
-                      />
+                    <div className={`p-3 rounded-md text-sm max-w-[65%] ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted border"}`}>
+                      <MessageContent content={message.content} role={message.role} />
                     </div>
                   </div>
-                  {message.role === "assistant" && (
-                    <SuggestedQuestions
-                      questions={
-                        JSON.parse(message.content).suggested_questions || []
-                      }
-                      onQuestionClick={handleSuggestedQuestionClick}
-                      isLoading={isLoading}
-                    />
-                  )}
+                  {message.role === "assistant" && <SuggestedQuestions questions={JSON.parse(message.content).suggested_questions || []} onQuestionClick={handleSuggestedQuestionClick} isLoading={isLoading} />}
                 </div>
               ))}
               <div ref={messagesEndRef} style={{ height: "1px" }} />
@@ -676,35 +527,13 @@ function ChatArea() {
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col w-full relative bg-background border rounded-xl focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-        >
-          <Textarea
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message here..."
-            disabled={isLoading}
-            className="resize-none min-h-[44px] bg-background  border-0 p-3 rounded-xl shadow-none focus-visible:ring-0"
-            rows={1}
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col w-full relative bg-background border rounded-xl focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+          <Textarea value={input} onChange={handleInputChange} onKeyDown={handleKeyDown} placeholder="Type your message here..." disabled={isLoading} className="resize-none min-h-[44px] bg-background  border-0 p-3 rounded-xl shadow-none focus-visible:ring-0" rows={1} />
           <div className="flex justify-between items-center p-3">
             <div>
-              <Image
-                src="/claude-icon.svg"
-                alt="Claude Icon"
-                width={0}
-                height={14}
-                className="w-auto h-[14px] mt-1"
-              />
+              <Image src="/claude-icon.svg" alt="Claude Icon" width={0} height={14} className="w-auto h-[14px] mt-1" />
             </div>
-            <Button
-              type="submit"
-              disabled={isLoading || input.trim() === ""}
-              className="gap-2"
-              size="sm"
-            >
+            <Button type="submit" disabled={isLoading || input.trim() === ""} className="gap-2" size="sm">
               {isLoading ? (
                 <div className="animate-spin h-5 w-5 border-t-2 border-white rounded-full" />
               ) : (
